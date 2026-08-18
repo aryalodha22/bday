@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Naitik!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: #d8b48c;
+      background-image: 
+        radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 0),
+        radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+      font-family: 'Fredoka', cursive, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 35px;
+      padding-bottom: 40px;
+      overflow-x: hidden;
+    }
+
+    /* Scrapbook Header Tape */
+    .header-tag {
+      background: #fdf6e2;
+      padding: 8px 24px;
+      border-radius: 2px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      font-family: 'Caveat', cursive;
+      font-size: 26px;
+      color: #8b2626;
+      transform: rotate(-1.5deg);
+      border-left: 3px dashed #d14949;
+      border-right: 3px dashed #d14949;
+      margin-bottom: 25px;
+      z-index: 10;
+    }
+
+    /* Main Container with 3D Perspective */
+    .card-stage {
+      perspective: 1800px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 950px;
+      min-height: 620px;
+      position: relative;
+    }
+
+    /* ================= CLOSED COVER STATE ================= */
+    .closed-cover {
+      width: 420px;
+      height: 590px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25), 0 5px 15px rgba(0,0,0,0.15);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+      overflow: hidden;
+      border: 10px solid #ffffff;
+    }
+
+    .closed-cover:hover {
+      transform: translateY(-8px) scale(1.02) rotate(0.5deg);
+      box-shadow: 0 22px 45px rgba(0,0,0,0.3);
+    }
+
+    .closed-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .tap-hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.92);
+      color: #7a1d1d;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      animation: pulse 1.8s infinite;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.06); }
+    }
+
+    /* ================= OPENED SPREAD STATE ================= */
+    .spread-container {
+      display: none;
+      width: 880px;
+      height: 600px;
+      background: #fbf5e8;
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      position: relative;
+      border: 8px solid #ffffff;
+      transform-style: preserve-3d;
+      animation: openBook 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes openBook {
+      0% { transform: scale(0.85) rotateY(-20deg); opacity: 0; }
+      100% { transform: scale(1) rotateY(0deg); opacity: 1; }
+    }
+
+    /* Center Spine Shadow */
+    .spread-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 40px;
+      height: 100%;
+      transform: translateX(-50%);
+      background: linear-gradient(to right, 
+        rgba(0,0,0,0.18) 0%, 
+        rgba(0,0,0,0.06) 35%, 
+        transparent 50%, 
+        rgba(0,0,0,0.06) 65%, 
+        rgba(0,0,0,0.18) 100%);
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    .spread-page {
+      width: 50%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      overflow: hidden;
+    }
+
+    /* Left Page (Letter & Envelope) */
+    .left-page {
+      left: 0;
+      border-right: 1px solid rgba(0,0,0,0.08);
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f2e3cd;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .envelope-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Peek / Tucked Letter in Envelope */
+    .letter-tucked {
+      position: absolute;
+      top: 18%;
+      left: 12%;
+      width: 76%;
+      height: 65%;
+      object-fit: cover;
+      border-radius: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      transition: transform 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .letter-tucked:hover {
+      transform: translateY(-12px);
+      filter: brightness(1.03);
+    }
+
+    /* Letter Lifted/Pop-out Overlay */
+    .letter-modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .letter-modal-backdrop.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .letter-popout {
+      max-width: 82vw;
+      max-height: 85vh;
+      width: 480px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+      transform: scale(0.85);
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      background: #fff;
+      padding: 6px;
+    }
+
+    .letter-modal-backdrop.active .letter-popout {
+      transform: scale(1);
+    }
+
+    .popout-hint {
+      position: absolute;
+      bottom: 25px;
+      color: #fff;
+      background: rgba(0,0,0,0.7);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    /* Right Page (Cake & Candles) */
+    .right-page {
+      right: 0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f7e8d3;
+      position: relative;
+    }
+
+    .cake-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #cakeCanvas {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    /* Separated Flame Overlay Elements */
+    .flame {
+      position: absolute;
+      width: 48px;
+      height: 68px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      transform-origin: bottom center;
+      animation: flicker 0.15s infinite alternate ease-in-out;
+      pointer-events: none;
+      transition: transform 0.1s linear, opacity 0.4s ease;
+      z-index: 10;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-1.5deg); opacity: 0.95; }
+      100% { transform: scale(1.08, 0.95) rotate(1.5deg); opacity: 1; }
+    }
+
+    .flame.extinguished {
+      opacity: 0 !important;
+      transform: scale(0.2) translateY(-20px) !important;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    /* Interactive Blowing Bar & Controls */
+    .blow-controls {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 20;
+    }
+
+    .meter-label {
+      font-size: 13px;
+      color: #555;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .meter-outer {
+      width: 100%;
+      height: 10px;
+      background: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid #ccc;
+    }
+
+    .meter-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff9a9e, #fecfef, #f6d365);
+      transition: width 0.08s ease-out;
+      border-radius: 5px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn {
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(231, 76, 60, 0.3);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn:hover {
+      background: #c0392b;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-secondary {
+      background: #3498db;
+      box-shadow: 0 3px 8px rgba(52, 152, 219, 0.3);
+    }
+    .btn-secondary:hover { background: #2980b9; }
+
+    .https-note {
+      font-size: 10.5px;
+      color: #777;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* Wish Banner Popup */
+    .wish-banner {
+      display: none;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      background: #fffdf2;
+      border: 3px solid #ff4757;
+      padding: 16px 28px;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      text-align: center;
+      z-index: 30;
+      animation: popWish 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes popWish {
+      to { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .wish-banner h2 {
+      font-family: 'Caveat', cursive;
+      font-size: 36px;
+      color: #ff4757;
+      margin-bottom: 4px;
+    }
+
+    /* Back to Cover Navigation Button */
+    .nav-back-btn {
+      margin-top: 22px;
+      background: #fff;
+      color: #444;
+      border: 2px dashed #aaa;
+      padding: 8px 22px;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+      display: none;
+    }
+
+    .nav-back-btn:hover {
+      background: #fffae8;
+      border-color: #e74c3c;
+      color: #e74c3c;
+      transform: scale(1.04);
+    }
+
+    /* Fullscreen Confetti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    /* Responsive scaling for mobile / smaller screens */
+    @media (max-width: 920px) {
+      .card-stage { min-height: 520px; }
+      .closed-cover { width: 340px; height: 480px; }
+      .spread-container { width: 680px; height: 480px; }
+      .wish-banner h2 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scrapbook Top Header -->
+  <div class="header-tag">✨ A Special Birthday Scrapbook ✨</div>
+
+  <!-- Main Card Stage -->
+  <div class="card-stage">
+    
+    <!-- 1. Closed Cover View -->
+    <div class="closed-cover" id="closedCover" onclick="openCard()">
+      <img id="coverImg" src="" alt="Cover Photo">
+      <div class="tap-hint">👉 Tap Cover to Open Card 👈</div>
+    </div>
+
+    <!-- 2. Two-Page Open Spread View -->
+    <div class="spread-container" id="spreadContainer">
+      
+      <!-- Left Page: Envelope & Peek Letter -->
+      <div class="spread-page left-page">
+        <div class="envelope-wrapper">
+          <img id="envelopeImg" class="envelope-bg" src="" alt="Envelope">
+          <!-- Tucked Letter inside envelope -->
+          <img id="tuckedLetterImg" class="letter-tucked" src="" alt="Letter Preview" onclick="toggleLetter(true)">
+        </div>
+      </div>
+
+      <!-- Right Page: Cake & Candles -->
+      <div class="spread-page right-page">
+        <div class="cake-container" id="cakeContainer">
+          <canvas id="cakeCanvas"></canvas>
+          <!-- Extracted Flames will be dynamic overlay HTML elements here -->
+          <div id="flame-0" class="flame"></div>
+          <div id="flame-1" class="flame"></div>
+          <div id="flame-2" class="flame"></div>
+        </div>
+
+        <!-- Wish Banner after blowing out -->
+        <div class="wish-banner" id="wishBanner">
+          <h2>Make a Wish, Naitik! 🎂✨</h2>
+          <p style="color:#666; font-size:14px; margin-bottom:10px;">May all your dreams come true!</p>
+          <button class="btn btn-secondary" onclick="relightCandles()">🔥 Relight Candles</button>
+        </div>
+
+        <!-- Blowing Interaction Controls -->
+        <div class="blow-controls" id="blowControls">
+          <div class="meter-label">
+            <span>🎤 Mic Blow Detector</span>
+            <span id="meterPercent">0%</span>
+          </div>
+          <div class="meter-outer">
+            <div class="meter-inner" id="meterBar"></div>
+          </div>
+          <div class="action-row">
+            <button class="btn" id="blowBtn" onmousedown="startHoldBlow()" onmouseup="stopHoldBlow()" ontouchstart="startHoldBlow()" ontouchend="stopHoldBlow()">
+              💨 Hold to Blow
+            </button>
+            <button class="btn btn-secondary" onclick="initMic()">
+              🎙️ Enable Mic
+            </button>
+          </div>
+          <div class="https-note">
+            * Note: Mic auto-detection requires HTTPS host. Spacebar or Hold button works anywhere!
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Floating Navigation Button -->
+  <button class="nav-back-btn" id="backBtn" onclick="closeCard()">📖 Back to Cover</button>
+
+  <!-- Expanded Full Letter Modal Backdrop -->
+  <div class="letter-modal-backdrop" id="letterModal" onclick="toggleLetter(false)">
+    <img id="fullLetterImg" class="letter-popout" src="" alt="Full Letter Message">
+    <div class="popout-hint">Tap anywhere to tuck letter back</div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <script>
+    /* ================= 1. IMAGE SOURCES ================= */
+    // Placeholders populated on window load or replaced with data URIs
+    const IMAGES = {
+      cover: '1.jpg',
+      envelope: '2.jpg',
+      letter: '3.jpg',
+      cake: '4.jpg'
+    };
+
+    /* State variables */
+    let candlesLit = true;
+    let blowTimer = 0;
+    let holdBlowing = false;
+    let audioCtx, analyser, micStream;
+    let animFrameId;
+
+    // Load Image Elements
+    document.getElementById('coverImg').src = IMAGES.cover;
+    document.getElementById('envelopeImg').src = IMAGES.envelope;
+    document.getElementById('tuckedLetterImg').src = IMAGES.letter;
+    document.getElementById('fullLetterImg').src = IMAGES.letter;
+
+    /* ================= 2. CARD OPEN / CLOSE LOGIC ================= */
+    function openCard() {
+      document.getElementById('closedCover').style.display = 'none';
+      document.getElementById('spreadContainer').style.display = 'flex';
+      document.getElementById('backBtn').style.display = 'inline-block';
+      setupCakeAndFlames();
+    }
+
+    function closeCard() {
+      document.getElementById('spreadContainer').style.display = 'none';
+      document.getElementById('closedCover').style.display = 'block';
+      document.getElementById('backBtn').style.display = 'none';
+      toggleLetter(false);
+    }
+
+    function toggleLetter(show) {
+      const modal = document.getElementById('letterModal');
+      if (show) {
+        modal.classList.add('active');
+      } else {
+        modal.classList.remove('active');
+      }
+    }
+
+    /* ================= 3. CAKE & FLAME CANVAS SEPARATION ================= */
+    function setupCakeAndFlames() {
+      const img = new Image();
+      img.src = IMAGES.cake;
+      img.onload = () => {
+        const canvas = document.getElementById('cakeCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = img.naturalWidth || 600;
+        canvas.height = img.naturalHeight || 800;
+        ctx.drawImage(img, 0, 0);
+
+        // Approximate locations of the 3 candle flame bounding boxes in 4.jpg
+        const flameBoxes = [
+          { x: canvas.width * 0.23, y: canvas.height * 0.44, w: canvas.width * 0.14, h: canvas.height * 0.14 },
+          { x: canvas.width * 0.43, y: canvas.height * 0.44, w: canvas.width * 0.14, h: canvas.height * 0.14 },
+          { x: canvas.width * 0.63, y: canvas.height * 0.44, w: canvas.width * 0.14, h: canvas.height * 0.14 }
+        ];
+
+        const container = document.getElementById('cakeContainer');
+        const rect = canvas.getBoundingClientRect();
+
+        flameBoxes.forEach((box, i) => {
+          // Create offscreen canvas to extract flame PNG with kraft background removed
+          const fCanvas = document.createElement('canvas');
+          fCanvas.width = box.w;
+          fCanvas.height = box.h;
+          const fCtx = fCanvas.getContext('2d');
+          fCtx.drawImage(img, box.x, box.y, box.w, box.h, 0, 0, box.w, box.h);
+
+          // Transparent cutout processing (chroma keying kraft texture)
+          const imgData = fCtx.getImageData(0, 0, box.w, box.h);
+          const data = imgData.data;
+          for (let p = 0; p < data.length; p += 4) {
+            const r = data[p], g = data[p+1], b = data[p+2];
+            // Remove brownish kraft tones, keeping red/pink/white flame drawing
+            if (r > 140 && g > 115 && b > 80 && (r - g < 55) && (g - b < 45)) {
+              data[p+3] = 0; // Alpha = 0 (transparent)
+            }
+          }
+          fCtx.putImageData(imgData, 0, 0);
+
+          // Apply extracted flame background image
+          const flameEl = document.getElementById(`flame-${i}`);
+          flameEl.style.backgroundImage = `url(${fCanvas.toDataURL()})`;
+          
+          // Position relative to cake canvas
+          const leftPercent = ((box.x + box.w * 0.05) / canvas.width) * 100;
+          const topPercent = ((box.y - box.h * 0.02) / canvas.height) * 100;
+          const widthPercent = (box.w / canvas.width) * 100;
+          const heightPercent = (box.h / canvas.height) * 100;
+
+          flameEl.style.left = `${leftPercent}%`;
+          flameEl.style.top = `${topPercent}%`;
+          flameEl.style.width = `${widthPercent}%`;
+          flameEl.style.height = `${heightPercent}%`;
+        });
+
+        // Erase flames from base cake canvas by backfilling with kraft texture tint
+        flameBoxes.forEach(box => {
+          ctx.fillStyle = "#e2c199"; 
+          ctx.beginPath();
+          ctx.ellipse(box.x + box.w/2, box.y + box.h/2 + box.h*0.05, box.w*0.48, box.h*0.48, 0, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      };
+    }
+
+    /* ================= 4. WEB AUDIO MIC & BLOW DETECTION ================= */
+    async function initMic() {
+      try {
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        const source = audioCtx.createMediaStreamSource(micStream);
+        source.connect(analyser);
+        listenAudio();
+        alert("Microphone enabled! Try blowing into your mic.");
+      } catch (err) {
+        alert("Mic access was blocked or unavailable. You can use the 'Hold to Blow' button or Spacebar!");
+      }
+    }
+
+    function listenAudio() {
+      if (!analyser || !candlesLit) return;
+      const buffer = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(buffer);
+
+      // Average low-mid frequencies typical of wind blowing noise
+      let sum = 0;
+      for (let i = 0; i < buffer.length; i++) {
+        sum += buffer[i];
+      }
+      let average = sum / buffer.length;
+      let level = Math.min(100, Math.max(0, (average - 15) * 2.2));
+
+      processBlowLevel(level);
+      requestAnimationFrame(listenAudio);
+    }
+
+    /* Hold to blow fallback events */
+    function startHoldBlow() { holdBlowing = true; simulateHold(); }
+    function stopHoldBlow() { holdBlowing = false; }
+
+    function simulateHold() {
+      if (!holdBlowing || !candlesLit) return;
+      processBlowLevel(75 + Math.random() * 20);
+      setTimeout(simulateHold, 50);
+    }
+
+    // Keyboard Spacebar fallback
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !holdBlowing && candlesLit) {
+        holdBlowing = true;
+        simulateHold();
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space') holdBlowing = false;
+    });
+
+    /* Process blow intensity for flame bend & candle extinguish */
+    function processBlowLevel(level) {
+      if (!candlesLit) return;
+
+      const meterBar = document.getElementById('meterBar');
+      const meterPercent = document.getElementById('meterPercent');
+      meterBar.style.width = `${level}%`;
+      meterPercent.innerText = `${Math.round(level)}%`;
+
+      const flames = document.querySelectorAll('.flame');
+
+      if (level > 35) {
+        // Bend flames sideways with wind force
+        const skewAngle = (level / 100) * -35;
+        const scaleY = 1 - (level / 100) * 0.35;
+        flames.forEach(f => {
+          f.style.transform = `skewX(${skewAngle}deg) scaleY(${scaleY})`;
+        });
+
+        blowTimer += 0.08;
+        if (blowTimer >= 0.5) {
+          extinguishCandles();
+        }
+      } else {
+        blowTimer = Math.max(0, blowTimer - 0.05);
+        flames.forEach(f => {
+          f.style.transform = `none`;
+        });
+      }
+    }
+
+    function extinguishCandles() {
+      candlesLit = false;
+      const flames = document.querySelectorAll('.flame');
+      flames.forEach(f => f.classList.add('extinguished'));
+
+      document.getElementById('meterBar').style.width = '0%';
+      document.getElementById('meterPercent').innerText = '0%';
+      document.getElementById('blowControls').style.display = 'none';
+
+      // Show wish message and launch confetti burst
+      setTimeout(() => {
+        document.getElementById('wishBanner').style.display = 'block';
+        launchConfetti();
+      }, 400);
+    }
+
+    function relightCandles() {
+      candlesLit = true;
+      blowTimer = 0;
+      const flames = document.querySelectorAll('.flame');
+      flames.forEach(f => f.classList.remove('extinguished'));
+
+      document.getElementById('wishBanner').style.display = 'none';
+      document.getElementById('blowControls').style.display = 'flex';
+
+      if (analyser) listenAudio();
+    }
+
+    /* ================= 5. CONFETTI EFFECT ================= */
+    function launchConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#e84393', '#70a1ff'];
+
+      for (let i = 0; i < 120; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 8 + 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedY: Math.random() * 5 + 3,
+          speedX: Math.random() * 4 - 2,
+          rotation: Math.random() * 360,
+          rotSpeed: Math.random() * 10 - 5
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+
+        pieces.forEach(p => {
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.rotation += p.rotSpeed;
+
+          if (p.y < canvas.height) active = true;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        if (active) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      render();
+    }
+
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('confettiCanvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
