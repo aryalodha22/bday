@@ -33,7 +33,7 @@
       overflow-x: hidden;
     }
 
-    /* Main Container Stage */
+    /* Main Card Stage */
     .card-stage {
       perspective: 1800px;
       display: flex;
@@ -95,7 +95,7 @@
 
     /* ================= OPENED SPREAD (PAGES 2 & 3 SIDE BY SIDE) ================= */
     .spread-container {
-      display: none; /* Flexbox toggled via JS when opened */
+      display: none; /* Flexbox toggled via JS */
       flex-direction: row;
       width: 100%;
       max-width: 880px;
@@ -130,7 +130,7 @@
         rgba(0,0,0,0.03) 60%, 
         rgba(0,0,0,0.15) 100%);
       pointer-events: none;
-      z-index: 10;
+      z-index: 15;
     }
 
     /* ================= PAGE 2: LEFT PAGE (ENVELOPE & LETTER) ================= */
@@ -139,7 +139,7 @@
       width: 50%;
       height: 100%;
       background: #f2e3cd;
-      padding: 15px;
+      padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -147,56 +147,62 @@
       border-right: 1px solid rgba(0,0,0,0.08);
     }
 
-    .envelope-wrapper {
+    /* Envelope & Letter Box Container */
+    .envelope-box {
       position: relative;
       width: 100%;
       height: 100%;
-      max-width: 380px;
-      max-height: 520px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* 2.jpg (Envelope Background) */
-    .envelope-bg {
+    /* 2.jpg (Envelope Base Image) */
+    .envelope-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      display: block;
     }
 
-    /* 3.jpg (Preview Letter tucked over Envelope) */
-    .letter-tucked {
+    /* 3.jpg (Letter Preview Tucked Over Envelope) */
+    .letter-preview {
       position: absolute;
-      top: 20%;
-      left: 12%;
-      width: 76%;
-      height: 58%;
+      top: 18%;
+      left: 10%;
+      width: 80%;
+      height: 60%;
       object-fit: cover;
       border-radius: 6px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
       cursor: pointer;
-      z-index: 5;
+      z-index: 10;
+      border: 3px solid #ffffff;
     }
 
-    .letter-tucked:hover {
-      transform: translateY(-12px) scale(1.02);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+    .letter-preview:hover {
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.45);
     }
 
     .letter-hint {
       position: absolute;
       bottom: 25px;
-      background: rgba(0, 0, 0, 0.75);
-      color: #fff;
-      padding: 6px 14px;
-      border-radius: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.78);
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 20px;
       font-size: 13px;
-      z-index: 6;
+      font-weight: 600;
+      z-index: 12;
       pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
     /* ================= PAGE 3: RIGHT PAGE (CAKE & CANDLES) ================= */
@@ -335,7 +341,7 @@
     }
     .btn-secondary:hover { background: #2980b9; }
 
-    /* Wish Banner Popup on Page 3 */
+    /* Wish Banner Popup */
     .wish-banner {
       display: none;
       position: absolute;
@@ -358,7 +364,7 @@
       margin-bottom: 4px;
     }
 
-    /* Full Letter Modal Popup */
+    /* FULL LETTER MODAL POPUP (3.jpg) */
     .letter-modal {
       display: none;
       position: fixed;
@@ -366,8 +372,8 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
       z-index: 100;
       justify-content: center;
       align-items: center;
@@ -378,16 +384,32 @@
       display: flex;
     }
 
+    .letter-modal-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .letter-modal img {
       max-width: 90vw;
-      max-height: 85vh;
+      max-height: 82vh;
       width: 480px;
       object-fit: contain;
       border-radius: 8px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
       background: #fff;
-      padding: 6px;
+      padding: 8px;
       cursor: pointer;
+    }
+
+    .close-modal-hint {
+      margin-top: 12px;
+      color: #ffffff;
+      background: rgba(0,0,0,0.6);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
     }
 
     /* Floating Navigation Button */
@@ -449,11 +471,11 @@
     <!-- OPENED SPREAD (PAGES 2 & 3) -->
     <div class="spread-container" id="spreadContainer">
       
-      <!-- PAGE 2: LEFT PAGE (Envelope 2.jpg + Letter 3.jpg) -->
+      <!-- PAGE 2: LEFT PAGE (Envelope 2.jpg + Letter Preview 3.jpg) -->
       <div class="left-page">
-        <div class="envelope-wrapper">
-          <img src="2.jpg" class="envelope-bg" alt="Envelope">
-          <img src="3.jpg" class="letter-tucked" alt="Letter Preview" onclick="toggleLetter(true)">
+        <div class="envelope-box">
+          <img src="2.jpg" class="envelope-img" alt="Envelope">
+          <img src="3.jpg" class="letter-preview" alt="Letter Preview" onclick="toggleLetter(true)">
           <div class="letter-hint">✉️ Tap letter to expand</div>
         </div>
       </div>
@@ -506,9 +528,12 @@
   <!-- Navigation Button -->
   <button class="nav-back-btn" id="backBtn" onclick="closeCard()">📖 Close Card</button>
 
-  <!-- Expanded Full Letter Modal (3.jpg) -->
+  <!-- Expanded Full Letter Modal Popup (3.jpg) -->
   <div class="letter-modal" id="letterModal" onclick="toggleLetter(false)">
-    <img src="3.jpg" alt="Full Letter Message">
+    <div class="letter-modal-content">
+      <img src="3.jpg" alt="Full Letter Message">
+      <div class="close-modal-hint">Tap anywhere to close</div>
+    </div>
   </div>
 
   <!-- Confetti Canvas -->
