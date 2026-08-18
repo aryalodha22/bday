@@ -28,26 +28,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding-top: 35px;
-      padding-bottom: 40px;
+      justify-content: center;
+      padding-top: 20px;
+      padding-bottom: 20px;
       overflow-x: hidden;
-    }
-
-    /* Scrapbook Header Tape */
-    .header-tag {
-      background: #fdf6e2;
-      padding: 8px 24px;
-      border-radius: 2px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      font-family: 'Caveat', cursive;
-      font-size: 26px;
-      color: #8b2626;
-      transform: rotate(-1.5deg);
-      border-left: 3px dashed #d14949;
-      border-right: 3px dashed #d14949;
-      margin-bottom: 25px;
-      z-index: 10;
     }
 
     /* Main Container with 3D Perspective */
@@ -156,7 +140,7 @@
       overflow: hidden;
     }
 
-    /* Left Page (Letter & Envelope) */
+    /* Page 2: Left Page (Envelope & Peek Letter) */
     .left-page {
       left: 0;
       border-right: 1px solid rgba(0,0,0,0.08);
@@ -253,7 +237,7 @@
       font-size: 14px;
     }
 
-    /* Right Page (Cake & Candles) */
+    /* Page 3: Right Page (Cake & Candles) */
     .right-page {
       right: 0;
       padding: 12px;
@@ -471,8 +455,6 @@
 </head>
 <body>
 
- <div class="header-tag">✨ A Special Birthday Scrapbook ✨</div>
-
   <!-- Main Card Stage -->
   <div class="card-stage">
     
@@ -482,10 +464,10 @@
       <div class="tap-hint">👉 Tap Cover to Open Card 👈</div>
     </div>
 
-    <!-- 2. Two-Page Open Spread View -->
+    <!-- Opened Spread View -->
     <div class="spread-container" id="spreadContainer">
       
-      <!-- Left Page: Envelope & Peek Letter -->
+      <!-- Page 2: Left Page (Envelope & Peek Letter) -->
       <div class="spread-page left-page">
         <div class="envelope-wrapper">
           <img id="envelopeImg" class="envelope-bg" src="" alt="Envelope">
@@ -494,7 +476,7 @@
         </div>
       </div>
 
-      <!-- Right Page: Cake & Candles -->
+      <!-- Page 3: Right Page (Cake & Blow Candles) -->
       <div class="spread-page right-page">
         <div class="cake-container" id="cakeContainer">
           <canvas id="cakeCanvas"></canvas>
@@ -553,7 +535,6 @@
 
   <script>
     /* ================= 1. IMAGE SOURCES ================= */
-    // Placeholders populated on window load or replaced with data URIs
     const IMAGES = {
       cover: './1.jpg',
       envelope: './2.jpg',
@@ -566,7 +547,6 @@
     let blowTimer = 0;
     let holdBlowing = false;
     let audioCtx, analyser, micStream;
-    let animFrameId;
 
     // Load Image Elements
     document.getElementById('coverImg').src = IMAGES.cover;
@@ -617,9 +597,6 @@
           { x: canvas.width * 0.63, y: canvas.height * 0.44, w: canvas.width * 0.14, h: canvas.height * 0.14 }
         ];
 
-        const container = document.getElementById('cakeContainer');
-        const rect = canvas.getBoundingClientRect();
-
         flameBoxes.forEach((box, i) => {
           // Create offscreen canvas to extract flame PNG with kraft background removed
           const fCanvas = document.createElement('canvas');
@@ -628,12 +605,11 @@
           const fCtx = fCanvas.getContext('2d');
           fCtx.drawImage(img, box.x, box.y, box.w, box.h, 0, 0, box.w, box.h);
 
-          // Transparent cutout processing (chroma keying kraft texture)
+          // Transparent cutout processing
           const imgData = fCtx.getImageData(0, 0, box.w, box.h);
           const data = imgData.data;
           for (let p = 0; p < data.length; p += 4) {
             const r = data[p], g = data[p+1], b = data[p+2];
-            // Remove brownish kraft tones, keeping red/pink/white flame drawing
             if (r > 140 && g > 115 && b > 80 && (r - g < 55) && (g - b < 45)) {
               data[p+3] = 0; // Alpha = 0 (transparent)
             }
@@ -687,7 +663,6 @@
       const buffer = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(buffer);
 
-      // Average low-mid frequencies typical of wind blowing noise
       let sum = 0;
       for (let i = 0; i < buffer.length; i++) {
         sum += buffer[i];
